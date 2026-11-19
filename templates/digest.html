@@ -1,0 +1,70 @@
+{{define "claim"}}{{.Text}}{{range .Links}} <a href="{{.URL}}">[{{.Label}}]</a>{{end}}{{end}}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  {{/* Light-only, so Apple Mail and Gmail don't half-invert it, with an
+       explicit body background: a client in dark mode paints its own dark
+       ground behind a transparent message, which left #222 text on black. */}}
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #222; background-color: #ffffff; max-width: 720px; line-height: 1.5; padding: 8px; }
+    h1 { font-size: 20px; margin-bottom: 4px; }
+    .caveat { color: #888; font-size: 12px; margin-top: 0; margin-bottom: 24px; }
+    .section { margin-top: 28px; }
+    .section h2 { font-size: 15px; border-bottom: 1px solid #ddd; padding-bottom: 4px; margin-bottom: 4px; }
+    .meta { color: #888; font-size: 11px; margin-top: 0; margin-bottom: 12px; }
+    .headline { font-size: 14px; font-weight: 600; margin: 8px 0; }
+    h3 { font-size: 13px; color: #555; margin-top: 18px; margin-bottom: 6px; }
+    p { margin: 8px 0; font-size: 14px; }
+    .label { font-size: 12px; color: #555; margin: 10px 0 2px; }
+    ul { margin: 4px 0 8px; padding-left: 22px; font-size: 14px; }
+    li { margin: 3px 0; }
+    .error { color: #b00020; font-style: italic; }
+    .footer { color: #888; font-size: 11px; margin-top: 32px; border-top: 1px solid #eee; padding-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>{{.Subject}}</h1>
+  <p class="caveat">Activity for the listed calendar dates, in {{.Timezone}}.</p>
+{{range .Sections}}
+  <div class="section">
+    <h2><a href="{{.URL}}">{{.Source}}</a></h2>
+    <p class="meta">{{.Coverage}}</p>
+{{- if .Repositories}}
+    <ul>{{range .Repositories}}<li><a href="{{.URL}}">{{.Repo}}</a>: {{.Status}}{{with .Error}} <span class="error">({{.}})</span>{{end}}</li>{{end}}</ul>
+{{- end}}
+    <p class="meta">{{.Meta}}</p>
+{{- if .Note}}
+    <p>{{.Note}}</p>
+{{- end}}
+{{- if .Summary.Headline.Text}}
+    <p class="headline">{{template "claim" .Summary.Headline}}</p>
+{{- end}}
+{{- range .Summary.Repos}}
+    <h3>{{.Repo}}</h3>
+{{- if .Summary.Text}}
+    <p>{{template "claim" .Summary}}</p>
+{{- end}}
+{{- if .Shipped}}
+    <p class="label">Shipped</p>
+    <ul>{{range .Shipped}}<li>{{template "claim" .}}</li>{{end}}</ul>
+{{- end}}
+{{- if .InProgress}}
+    <p class="label">In progress</p>
+    <ul>{{range .InProgress}}<li>{{template "claim" .}}</li>{{end}}</ul>
+{{- end}}
+{{- end}}
+{{- if not .Summary.Headline.Text}}
+{{- range .Active}}
+    <h3>{{.Repo}}</h3>
+    <ul>{{range .Lines}}<li><a href="{{.URL}}">{{.Text}}</a></li>{{end}}</ul>
+{{- end}}
+{{- end}}
+  </div>
+{{end}}
+
+  <p class="footer">{{.Footer}}</p>
+</body>
+</html>
