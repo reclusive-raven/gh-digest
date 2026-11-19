@@ -80,7 +80,7 @@ jobs:
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
       DATE: ${{ inputs.date }}
     steps:
-      - run: gh extension install reclusive-raven/gh-digest --pin v0.1.0
+      - run: gh extension install reclusive-raven/gh-digest --pin v0.1.1
       - run: gh digest ${DATE:+--date "$DATE"} --to me@example.com my-org > /dev/null
 ```
 
