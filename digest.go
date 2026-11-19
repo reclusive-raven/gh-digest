@@ -286,7 +286,7 @@ func run(ctx context.Context, c *client, sum summarizer, send sender, o options,
 	var out []built
 	for _, s := range sections {
 		if s.Events == 0 && !o.SendOnEmpty {
-			fmt.Fprintf(stderr, "%s: quiet (%s), nothing to send\n", s.Source, plural(s.Tracked, "repo"))
+			fmt.Fprintf(stderr, "%s %s: quiet (%s), nothing to send\n", s.Source, date, plural(s.Tracked, "repo"))
 			continue
 		}
 		if sum != nil && len(s.Active) > 0 {
@@ -332,7 +332,7 @@ func run(ctx context.Context, c *client, sum summarizer, send sender, o options,
 			return fmt.Errorf("sending %s failed; nothing sent: %w", b.Source, err)
 		}
 		sent = append(sent, b.Source)
-		fmt.Fprintf(stderr, "%s: sent to %d recipient(s)\n", b.Source, len(to))
+		fmt.Fprintf(stderr, "%s %s: sent to %d recipient(s)\n", b.Source, date, len(to))
 	}
 	return nil
 }

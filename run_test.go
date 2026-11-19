@@ -51,7 +51,7 @@ func TestRunSendsActiveSourcesOnly(t *testing.T) {
 	if len(log) != 1 || log[0].subject != "GitHub digest — busy — 2026-09-24" || !slices.Equal(log[0].to, []string{"me@example.com", "them@example.com"}) {
 		t.Fatalf("sent %+v", log)
 	}
-	if !strings.Contains(errs.String(), "calm: quiet") || strings.Contains(errs.String(), "fix") {
+	if !strings.Contains(errs.String(), "calm 2026-09-24: quiet") || strings.Contains(errs.String(), "fix") {
 		t.Fatalf("stderr carries status only:\n%s", errs.String())
 	}
 	if !strings.Contains(out.String(), "commit 0123456 fix (ana)") {
